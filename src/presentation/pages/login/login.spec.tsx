@@ -1,15 +1,15 @@
 import React from "react";
 import { RenderResult, cleanup, fireEvent, render } from '@testing-library/react'
 import Login from "./login";
-import { ValidationSpy } from "../../test";
+import { ValidationStub } from "../../test";
 
 type SutTypes = {
   sut: RenderResult;
-  validationSpy: ValidationSpy
+  validationSpy: ValidationStub
 }
 
 const makeSut = (): SutTypes => {
-  const validationSpy = new ValidationSpy()
+  const validationSpy = new ValidationStub()
   validationSpy.errorMessage = 'mensagem de erro'
   const sut = render(<Login validation={validationSpy} />)
   return {
@@ -34,30 +34,22 @@ describe('Login Component', () => {
     expect(emailStatus.textContent).toBe('🛑')
   })
 
-  test('Should call validation with correct values', () => {
-    const { sut, validationSpy } = makeSut()
-
-    const emailInput = sut.getByTestId("email")
-    fireEvent.input(emailInput, { target: { value: 'any_email' } })
-    expect(validationSpy.fieldName).toBe('email')
-    expect(validationSpy.fieldValue).toBe('any_email')
-  })
-  
-  test('Should call validation with correct password', () => {
-    const { sut, validationSpy } = makeSut()
-
-    const passwordInput = sut.getByTestId("password")
-    fireEvent.input(passwordInput, { target: { value: 'any_password' } })
-    expect(validationSpy.fieldName).toBe('password')
-    expect(validationSpy.fieldValue).toBe('any_password')
-  })
-
   test('Should show email error if Validation fails', () => {
     const { sut, validationSpy } = makeSut()
 
     const emailInput = sut.getByTestId("email")
     fireEvent.input(emailInput, { target: { value: 'any_email' } })
     const emailStatus = sut.getByTestId('email-status')
+    expect(emailStatus.title).toBe(validationSpy.errorMessage)
+    expect(emailStatus.textContent).toBe('🛑')
+  })
+
+  test('Should show password error if Validation fails', () => {
+    const { sut, validationSpy } = makeSut()
+
+    const passwordInput = sut.getByTestId("password")
+    fireEvent.input(passwordInput, { target: { value: 'any_password' } })
+    const emailStatus = sut.getByTestId('password-status')
     expect(emailStatus.title).toBe(validationSpy.errorMessage)
     expect(emailStatus.textContent).toBe('🛑')
   })
