@@ -2,6 +2,8 @@ import React from "react";
 import { RenderResult, cleanup, fireEvent, render } from '@testing-library/react'
 import Login from "./login";
 import { ValidationStub } from "../../test";
+import { BrowserRouter } from "react-router-dom";
+
 
 type SutTypes = {
   sut: RenderResult;
@@ -14,7 +16,13 @@ type SutParams = {
 const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
   validationStub.errorMessage = params?.validationError!
-  const sut = render(<Login validation={validationStub} />)
+  const sut = render(
+    <>
+    <BrowserRouter>
+      <Login validation={validationStub} />
+    </BrowserRouter>
+    </>
+    )
   return {
     sut,
   }
@@ -103,5 +111,14 @@ describe('Login Component', () => {
     simulateValidSubmit(sut)
     const spinner = sut.getByTestId('spinner')
     expect(spinner).toBeTruthy()
+  })
+
+  test('Should go to sign up page', () => {
+    const { sut } = makeSut()
+
+    const register = sut.getByTestId('signup')
+    fireEvent.click(register)
+    console.log('teste', window.location.href)
+    expect(window.location.pathname).toBe('/signup')
   })
 })
