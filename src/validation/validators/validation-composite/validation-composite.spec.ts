@@ -26,7 +26,7 @@ describe('ValidationComposite', () => {
     expect(error).toBe('first_error_message')
   })
 
-  test('Should return error if any validation fails', () => {
+  test('Should return success if validation pass', () => {
     const { sut } = makeSut()
     const error = sut.validate('any_field', 'any_value')
     expect(error).toBeFalsy()
