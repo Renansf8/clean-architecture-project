@@ -10,5 +10,4 @@ export const MakeLogin: React.FC = () => {
       validation={makeLoginValidation()} 
     />
   )
-  
 }
