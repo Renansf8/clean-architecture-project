@@ -8,7 +8,6 @@ type Props = {
   makeLogin: ReactNode
 }
 
-
 export const Router = ({ makeLogin }: Props) => {
   return (
     <BrowserRouter>
